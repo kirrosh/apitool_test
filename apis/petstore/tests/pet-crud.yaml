@@ -1,0 +1,67 @@
+name: "Pet CRUD"
+description: "CRUD lifecycle for pets"
+base_url: "{{base_url}}"
+headers:
+  api_key: "{{api_key}}"
+  Content-Type: "application/json"
+tests:
+  - name: "Create pet"
+    POST: "/pet"
+    json:
+      id: 999
+      name: "test-doggie"
+      photoUrls: ["https://example.com/photo.jpg"]
+      status: "available"
+    expect:
+      status: 200
+      body:
+        id: { equals: 999 }
+        name: { equals: "test-doggie" }
+        status: { equals: "available" }
+
+  - name: "Get pet by ID"
+    GET: "/pet/999"
+    expect:
+      status: 200
+      body:
+        id: { equals: 999 }
+        name: { equals: "test-doggie" }
+
+  - name: "Find pets by status"
+    GET: "/pet/findByStatus"
+    query:
+      status: "available"
+    expect:
+      status: 200
+      body:
+        _body: { type: "array" }
+
+  - name: "Update pet"
+    PUT: "/pet"
+    json:
+      id: 999
+      name: "updated-doggie"
+      photoUrls: ["https://example.com/photo.jpg"]
+      status: "pending"
+    expect:
+      status: 200
+      body:
+        name: { equals: "updated-doggie" }
+        status: { equals: "pending" }
+
+  - name: "Verify pet updated"
+    GET: "/pet/999"
+    expect:
+      status: 200
+      body:
+        name: { equals: "updated-doggie" }
+
+  - name: "Delete pet"
+    DELETE: "/pet/999"
+    expect:
+      status: 200
+
+  - name: "Verify pet deleted"
+    GET: "/pet/999"
+    expect:
+      status: 404

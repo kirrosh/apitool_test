@@ -1,0 +1,87 @@
+name: "User CRUD"
+description: "User lifecycle"
+base_url: "{{base_url}}"
+headers:
+  Content-Type: "application/json"
+tests:
+  - name: "Create user"
+    POST: "/user"
+    json:
+      id: 100
+      username: "testuser{{$randomInt}}"
+      firstName: "Test"
+      lastName: "User"
+      email: "test@example.com"
+      password: "pass123"
+      phone: "1234567890"
+      userStatus: 0
+    expect:
+      status: 200
+
+  - name: "Create user with fixed username"
+    POST: "/user"
+    json:
+      id: 101
+      username: "apitestuser"
+      firstName: "API"
+      lastName: "Test"
+      email: "api@example.com"
+      password: "pass123"
+      phone: "1234567890"
+      userStatus: 0
+    expect:
+      status: 200
+
+  - name: "Get user by username"
+    GET: "/user/apitestuser"
+    expect:
+      status: 200
+      body:
+        username: { equals: "apitestuser" }
+        firstName: { equals: "API" }
+
+  - name: "Login user"
+    GET: "/user/login"
+    query:
+      username: "apitestuser"
+      password: "pass123"
+    expect:
+      status: 200
+      body:
+        _body: { exists: true }
+
+  - name: "Update user"
+    PUT: "/user/apitestuser"
+    json:
+      id: 101
+      username: "apitestuser"
+      firstName: "Updated"
+      lastName: "User"
+      email: "updated@example.com"
+      password: "pass123"
+      phone: "1234567890"
+      userStatus: 0
+    expect:
+      status: 200
+
+  - name: "Verify user updated"
+    GET: "/user/apitestuser"
+    expect:
+      status: 200
+      body:
+        firstName: { equals: "Updated" }
+
+  - name: "Logout"
+    GET: "/user/logout"
+    expect:
+      status: 200
+
+  - name: "Delete user"
+    DELETE: "/user/apitestuser"
+    expect:
+      status: 200
+
+  - name: "Verify user deleted"
+    GET: "/user/apitestuser"
+    expect:
+      status: 404

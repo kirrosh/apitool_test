@@ -1,0 +1,48 @@
+name: "Store Orders CRUD"
+description: "Orders lifecycle"
+base_url: "{{base_url}}"
+headers:
+  Content-Type: "application/json"
+tests:
+  - name: "Place order"
+    POST: "/store/order"
+    json:
+      id: 10
+      petId: 999
+      quantity: 1
+      shipDate: "2025-03-02T12:00:00.000Z"
+      status: "placed"
+      complete: false
+    expect:
+      status: 200
+      body:
+        id: { equals: 10 }
+        status: { equals: "placed" }
+        petId: { equals: 999 }
+
+  - name: "Get order by ID"
+    GET: "/store/order/10"
+    expect:
+      status: 200
+      body:
+        id: { equals: 10 }
+        status: { equals: "placed" }
+
+  - name: "Get inventory"
+    GET: "/store/inventory"
+    headers:
+      api_key: "{{api_key}}"
+    expect:
+      status: 200
+      body:
+        _body: { type: "object" }
+
+  - name: "Delete order"
+    DELETE: "/store/order/10"
+    expect:
+      status: 200
+
+  - name: "Verify order deleted"
+    GET: "/store/order/10"
+    expect:
+      status: 404

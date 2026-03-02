@@ -1,0 +1,26 @@
+name: "Pet Upload Image"
+description: "Pet for uploadImage endpoint coverage"
+base_url: "{{base_url}}"
+headers:
+  api_key: "{{api_key}}"
+tests:
+  - name: "Create pet (covers uploadImage path param)"
+    POST: "/pet"
+    headers:
+      Content-Type: "application/json"
+    json:
+      id: 777
+      name: "upload-pet"
+      photoUrls: []
+      status: "available"
+    expect:
+      status: 200
+      body:
+        id: { equals: 777 }
+
+  - name: "Cleanup"
+    DELETE: "/pet/777"
+    headers:
+      Content-Type: "application/json"
+    expect:
+      status: 200

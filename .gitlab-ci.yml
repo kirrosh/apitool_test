@@ -1,0 +1,12 @@
+api-tests:
+  image: ubuntu:latest
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl
+    - curl -fsSL https://raw.githubusercontent.com/kirrosh/apitool/master/install.sh | sh
+  script:
+    - mkdir -p test-results
+    - apitool run apis/ --report junit --no-db > test-results/junit.xml
+  artifacts:
+    when: always
+    reports:
+      junit: test-results/junit.xml

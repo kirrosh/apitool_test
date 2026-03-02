@@ -1,0 +1,28 @@
+name: API Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install apitool
+        run: curl -fsSL https://raw.githubusercontent.com/kirrosh/apitool/master/install.sh | sh
+
+      - name: Run tests
+        run: |
+          mkdir -p test-results
+          apitool run apis/ --report junit --no-db > test-results/junit.xml
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/junit.xml

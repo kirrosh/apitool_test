@@ -1,0 +1,86 @@
+name: "User Bulk Create"
+description: "createWithArray and createWithList"
+base_url: "{{base_url}}"
+headers:
+  Content-Type: "application/json"
+tests:
+  - name: "Create users with array"
+    POST: "/user/createWithArray"
+    json:
+      - id: 201
+        username: "bulkuser1"
+        firstName: "Bulk1"
+        lastName: "User"
+        email: "b1@example.com"
+        password: "pass"
+        userStatus: 0
+      - id: 202
+        username: "bulkuser2"
+        firstName: "Bulk2"
+        lastName: "User"
+        email: "b2@example.com"
+        password: "pass"
+        userStatus: 0
+    expect:
+      status: 200
+
+  - name: "Verify bulk user 1 created"
+    GET: "/user/bulkuser1"
+    expect:
+      status: 200
+      body:
+        username: { equals: "bulkuser1" }
+
+  - name: "Verify bulk user 2 created"
+    GET: "/user/bulkuser2"
+    expect:
+      status: 200
+      body:
+        username: { equals: "bulkuser2" }
+
+  - name: "Create users with list"
+    POST: "/user/createWithList"
+    json:
+      - id: 203
+        username: "listuser1"
+        firstName: "List1"
+        lastName: "User"
+        email: "l1@example.com"
+        password: "pass"
+        userStatus: 0
+      - id: 204
+        username: "listuser2"
+        firstName: "List2"
+        lastName: "User"
+        email: "l2@example.com"
+        password: "pass"
+        userStatus: 0
+    expect:
+      status: 200
+
+  - name: "Verify list user 1 created"
+    GET: "/user/listuser1"
+    expect:
+      status: 200
+      body:
+        username: { equals: "listuser1" }
+
+  - name: "Cleanup bulk users"
+    DELETE: "/user/bulkuser1"
+    expect:
+      status: 200
+
+  - name: "Cleanup bulk user 2"
+    DELETE: "/user/bulkuser2"
+    expect:
+      status: 200
+
+  - name: "Cleanup list user 1"
+    DELETE: "/user/listuser1"
+    expect:
+      status: 200
+
+  - name: "Cleanup list user 2"
+    DELETE: "/user/listuser2"
+    expect:
+      status: 200

@@ -1,0 +1,56 @@
+name: "Pet Extended"
+description: "findByTags, updateWithForm"
+base_url: "{{base_url}}"
+headers:
+  api_key: "{{api_key}}"
+  Content-Type: "application/json"
+tests:
+  - name: "Create pet with tags"
+    POST: "/pet"
+    json:
+      id: 888
+      name: "tagged-pet"
+      photoUrls: ["https://example.com/p.jpg"]
+      tags:
+        - id: 1
+          name: "tag1"
+        - id: 2
+          name: "tag2"
+      status: "available"
+    expect:
+      status: 200
+      body:
+        id: { equals: 888 }
+        name: { equals: "tagged-pet" }
+
+  - name: "Find pets by tags"
+    GET: "/pet/findByTags"
+    query:
+      tags: "tag1"
+    expect:
+      status: 200
+      body:
+        _body: { type: "array" }
+
+  - name: "Update pet with form"
+    POST: "/pet/888"
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    form:
+      name: "form-updated"
+      status: "sold"
+    expect:
+      status: 200
+
+  - name: "Verify form update"
+    GET: "/pet/888"
+    expect:
+      status: 200
+      body:
+        name: { equals: "form-updated" }
+        status: { equals: "sold" }
+
+  - name: "Cleanup tagged pet"
+    DELETE: "/pet/888"
+    expect:
+      status: 200
