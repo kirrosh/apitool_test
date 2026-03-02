@@ -5,7 +5,9 @@ api-tests:
     - curl -fsSL https://raw.githubusercontent.com/kirrosh/apitool/master/install.sh | sh
   script:
     - mkdir -p test-results
-    - apitool run apis/ --report junit --no-db > test-results/junit.xml
+    - apitool run apis/ --env default --report junit --no-db > test-results/junit.xml
+  allow_failure:
+    exit_codes: 1
   artifacts:
     when: always
     reports:

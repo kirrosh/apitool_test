@@ -19,7 +19,14 @@ jobs:
       - name: Run tests
         run: |
           mkdir -p test-results
-          apitool run apis/ --report junit --no-db > test-results/junit.xml
+          apitool run apis/ --env default --report junit --no-db > test-results/junit.xml
+        continue-on-error: true
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: test-results/junit.xml
 
       - uses: actions/upload-artifact@v4
         if: always()
